@@ -6,6 +6,7 @@
 // Hard mode: added .join(" ") to array output to have spaces instead of ,
 // Pro mode: set attribute on the ul element identified by 'content' to get rid of bullets
 // Replaced employee arrays with employee objects.
+// Changed DOM functionality to use jQuery.
 
 //var arrayAtticus = ["Atticus", "2405", "47000", 3];
 //var arrayJem = ["Jem", "62347", "63500", 4];
@@ -15,7 +16,7 @@ var outputObject = {
     employeeName : "",
     percentSTI : 0,
     adjAnnualComp : 0,
-    totalBonus : 0
+    totalBonus : 0,
 };
 var objectAtticus = {
   employeeName : "Atticus", 
@@ -45,24 +46,27 @@ var objectScout = {
 // add objects into an array
 var array = [objectAtticus, objectJem, objectBoo, objectScout];
 
-//Create variables used to write to the DOM
-var newEl, newText, position;
-//Capture the position of insertion into the DOM
-position = document.getElementById('content');
-// get rid of bullets by adding attribute to ul tag.
-document.getElementById('content').setAttribute("style","list-style: none;");
+$(document).ready(function(){
 
-//Loop the array, extracting each object and writing information to the DOM
-//Note that the information is not 'clean'
-for(var i = 0; i < array.length; i++){
-  outputObject = calculateSTI(array[i]); 
-  //console.log("this is outputObject ", outputObject);
- 	newEl = document.createElement('li');
-	//newText = document.createTextNode(array[i].join(" "));
-  newText = document.createTextNode(outputObject.employeeName + " " + outputObject.percentSTI + " " + outputObject.adjAnnualComp + " " + outputObject.totalBonus);
-	newEl.appendChild(newText);
-	position.appendChild(newEl);
-}
+  $("#content").on('click', '.someButton', function() {
+    //console.log($(this).parent().find('p').text());
+    $(this).parent().remove();
+  });
+
+  //Loop the array, extracting each object and writing information to the DOM
+  for(var i = 0; i < array.length; i++){
+    outputObject = calculateSTI(array[i]); 
+
+    $("#content").append("<div class='userContainer'></div>");
+
+    var $el = $("#content").children().last();
+    $el.append("<p>" + outputObject.employeeName +"</p>");
+    $el.append("<p>" + outputObject.percentSTI +"</p>");
+    $el.append("<p>" + outputObject.adjAnnualComp  +"</p>");
+    $el.append("<p>" + outputObject.totalBonus +"</p>");
+    $el.append("<button class='someButton'>Click me</button>");
+  }
+ });
 
 function calculateSTI(empObject){
 
