@@ -5,13 +5,45 @@
 // Bug 3: getBaseSTI was returning percent - 1.  Should just return percent.
 // Hard mode: added .join(" ") to array output to have spaces instead of ,
 // Pro mode: set attribute on the ul element identified by 'content' to get rid of bullets
+// Replaced employee arrays with employee objects.
 
-var arrayAtticus = ["Atticus", "2405", "47000", 3];
-var arrayJem = ["Jem", "62347", "63500", 4];
-var arrayBoo = ["Boo", "11435", "54000", 3];
-var arrayScout = ["Scout", "6243", "74750", 5];
+//var arrayAtticus = ["Atticus", "2405", "47000", 3];
+//var arrayJem = ["Jem", "62347", "63500", 4];
+//var arrayBoo = ["Boo", "11435", "54000", 3];
+//var arrayScout = ["Scout", "6243", "74750", 5];
+var outputObject = {
+    employeeName : "",
+    percentSTI : 0,
+    adjAnnualComp : 0,
+    totalBonus : 0
+};
+var objectAtticus = {
+  employeeName : "Atticus", 
+  employeeNumber :"2405", 
+  baseSalary : "47000", 
+  reviewScore : 3
+};
+var objectJem = {
+  employeeName : "Jem", 
+  employeeNumber :"62347", 
+  baseSalary : "63500", 
+  reviewScore : 4
+};
+var objectBoo = {
+  employeeName : "Boo", 
+  employeeNumber :"11435", 
+  baseSalary : "54000", 
+  reviewScore : 3
+};
+var objectScout = {
+  employeeName : "Scout", 
+  employeeNumber :"6243", 
+  baseSalary : "74750", 
+  reviewScore : 5
+};
 
-var array = [arrayAtticus, arrayJem, arrayBoo, arrayScout];
+// add objects into an array
+var array = [objectAtticus, objectJem, objectBoo, objectScout];
 
 //Create variables used to write to the DOM
 var newEl, newText, position;
@@ -20,35 +52,41 @@ position = document.getElementById('content');
 // get rid of bullets by adding attribute to ul tag.
 document.getElementById('content').setAttribute("style","list-style: none;");
 
-//Loop the array, extracting each array and writing information to the DOM
+//Loop the array, extracting each object and writing information to the DOM
 //Note that the information is not 'clean'
 for(var i = 0; i < array.length; i++){
-	array[i] = calculateSTI(array[i]); // need to increment array within the calculateSTI(array) - added [i]
+  outputObject = calculateSTI(array[i]); 
+  //console.log("this is outputObject ", outputObject);
  	newEl = document.createElement('li');
-	newText = document.createTextNode(array[i].join(" "));
+	//newText = document.createTextNode(array[i].join(" "));
+  newText = document.createTextNode(outputObject.employeeName + " " + outputObject.percentSTI + " " + outputObject.adjAnnualComp + " " + outputObject.totalBonus);
 	newEl.appendChild(newText);
 	position.appendChild(newEl);
 }
 
-function calculateSTI(array){
-  var newArray = [];
+function calculateSTI(empObject){
 
-  newArray[0] = array[0];
+  var newObject = {
+    employeeName : empObject.employeeName,
+    percentSTI : 0,
+    adjAnnualComp : 0,
+    totalBonus : 0
+  };
 
-  var employeeNumber = array[1];
-  var baseSalary = array[2];
-  var reviewScore = array[3];
+  var employeeNumber = empObject.employeeNumber;
+  var baseSalary = empObject.baseSalary;
+  var reviewScore = empObject.reviewScore;
 
   var bonus = getBaseSTI(reviewScore) + getYearAdjustment(employeeNumber) - getIncomeAdjustment(baseSalary);
   if(bonus > 0.13){
     bonus = 0.13;
   }
 
-  newArray[1] = bonus;
-  newArray[2] = Math.round(baseSalary * (1.0 + bonus)); //added Math.round
-  newArray[3] = Math.round(baseSalary * bonus); //added Math.round
-  console.log(newArray[0] + " " + newArray[1] + " " + newArray[2] + " " + newArray[3]);
-  return newArray;
+  newObject.percentSTI = bonus;
+  newObject.adjAnnualComp = Math.round(baseSalary * (1.0 + bonus)); //added Math.round
+  newObject.totalBonus = Math.round(baseSalary * bonus); //added Math.round
+  console.log(newObject.employeeName + " " + newObject.percentSTI + " " + newObject.adjAnnualComp + " " + newObject.totalBonus);
+  return newObject;
 }
 
 function getBaseSTI(reviewScore){
